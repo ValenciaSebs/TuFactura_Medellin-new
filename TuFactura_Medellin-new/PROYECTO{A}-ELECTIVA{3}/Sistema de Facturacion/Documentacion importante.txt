@@ -1,0 +1,46 @@
+Hacer instalacion de la siguiente Libreria:
+pip install python-dateutil  
+
+Perfil Admin creado:   |
+-----------------------|
+User: admin
+Password: 1234
+_______________________|
+Perfil Admin-IngresoPAg|
+-----------------------|
+User: 5322465
+Password: Electi45577
+_______________________|
+
+_______________________
+Usuarios Creados:      |
+-----------------------
+User: one@gmail.com
+Password: 12345
+
+User: tomas@gmail.com
+Password: 12345
+
+User: jhosep@gmial.com
+Password: 12345
+_______________________|
+
+
+
+
+
+
+#HACER MIGRACIONES
+python manage.py makemigrations facturacion
+python .\manage.py migrate
+
+#GITHUB#
+git init
+git add .
+git commit -m "Descripcion"
+git log --oneline
+git push
+
+
+
+

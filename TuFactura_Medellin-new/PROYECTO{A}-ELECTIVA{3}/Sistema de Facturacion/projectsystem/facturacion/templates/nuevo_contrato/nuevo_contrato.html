@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Contrato</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="{% static 'css/estilos.css' %}" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <img src="{% static 'img/logopag.png' %}" alt="Logo" width="90" height="75" class="d-inline-block align-text-top">
+                TuFactura Medellín
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Inicio</a>
+                    <a class="nav-link" href="{% url 'nuevo_contrato' %}">Nuevo Contrato</a>
+                    <a class="nav-link" href="{% url 'historico_contratos' request.session.logueado.id %}">Expedir Recibo</a>
+                </div>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link">Bienvenido(a): <strong>{{ request.session.logueado.nombre }} {{ request.session.logueado.apellido }} - ID[{{ request.session.logueado.id }}]</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}"><button class="btn btn-custom">Cerrar Sesión</button></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+   <!-- Formulario-Contrato -->
+    <div class="container mt-5">
+        <h1 class="text-center mb-4" style="font-weight: 900; color: #9028a7;">Formulario de Contrato</h1>
+        
+        <!-- Formulario -->
+        <form method="POST" class="bg-white p-4 rounded shadow custom-form">
+            {% csrf_token %}
+            
+            <!-- Servicio -->
+            <div class="mb-4">
+                <label for="servicio" class="form-label fw-bold">Servicio del Contrato</label>
+                <div class="input-group">
+                    {{ form.servicio }}
+                </div>
+            </div>
+
+            <!-- Fecha Actual -->
+            <div class="mb-4">
+                <label for="fecha" class="form-label fw-bold">Fecha Actual</label>
+                <div class="input-group">
+                    <input type="date" class="form-control bg-light border-0" id="fecha" name="fecha" value="{{ form.fecha.value }}">
+                </div>
+                {% if form.fecha.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.fecha.errors|join:', ' }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Nombres y Apellidos -->
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label for="nombres" class="form-label fw-bold">Nombres</label>
+                    <div class="input-group">
+                        {{ form.nombres }}
+                    </div>
+                    {% if form.nombres.errors %}
+                        <div class="text-danger mt-2">
+                            {{ form.nombres.errors|join:', ' }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label for="apellidos" class="form-label fw-bold">Apellidos</label>
+                    <div class="input-group">
+                        {{ form.apellidos }}
+                    </div>
+                    {% if form.apellidos.errors %}
+                        <div class="text-danger mt-2">
+                            {{ form.apellidos.errors|join:', ' }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Cédula -->
+            <div class="mb-4">
+                <label for="cedula" class="form-label fw-bold">Cédula</label>
+                <div class="input-group">
+                    {{ form.cedula }}
+                </div>
+                {% if form.cedula.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.cedula.errors|join:', ' }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Dirección -->
+            <div class="mb-4">
+                <label for="direccion" class="form-label fw-bold">Dirección</label>
+                <div class="input-group">
+                    {{ form.direccion }}
+                </div>
+                {% if form.direccion.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.direccion.errors|join:', ' }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Detalles del Contrato -->
+            <div class="mb-4">
+                <label for="detalles" class="form-label fw-bold">Detalles del Contrato</label>
+                <div class="input-group">
+                    {{ form.detalles }}
+                </div>
+                {% if form.detalles.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.detalles.errors|join:', ' }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Duración -->
+            <div class="mb-4">
+                <label for="duracion" class="form-label fw-bold">Duración del Contrato (meses)</label>
+                <div class="input-group">
+                    <button type="button" class="btn btn-outline-secondary" onclick="cambiarDuracion(-1)">-</button>
+                    <input type="text" class="form-control text-center bg-light border-0" id="duracion" name="duracion" value="{{ form.duracion.value|default:'12' }}" readonly>
+                    <button type="button" class="btn btn-outline-secondary" onclick="cambiarDuracion(1)">+</button>
+                </div>
+                {% if form.duracion.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.duracion.errors|join:', ' }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Fecha de Plazo -->
+            <!-- Precio -->
+            <div class="mb-4">
+                <label for="precio" class="form-label fw-bold">Valor Total del Contrato</label>
+                <div class="input-group">
+                    <input type="text" class="form-control bg-light border-0" id="precio" name="precio" placeholder="Ej: 1234.56" value="{{ form.precio.value|default:'' }}" onblur="validarPrecio(this)">
+                </div>
+                {% if form.precio.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.precio.errors|join:', ' }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Confidencialidad -->
+            <div class="form-check mb-4">
+                <input type="checkbox" class="form-check-input" id="confidencialidad" name="confidencialidad" required>
+                <label class="form-check-label fw-bold" for="confidencialidad">
+                    Estoy de acuerdo con los términos de confidencialidad y autorizo el uso de mis datos personales según las políticas de la empresa.
+                </label>
+            </div>
+
+            <!-- Botón de Enviar -->
+            <button type="submit" class="btn btn-custom w-100 d-block mx-auto py-2 fs-5">Enviar</button>
+        </form>
+    </div>
+
+    <!-- Scripts adicionales -->
+    <script>
+        function cambiarDuracion(valor) {
+            var inputDuracion = document.getElementById('duracion');
+            var duracionActual = parseInt(inputDuracion.value, 10);
+            if (!isNaN(duracionActual)) {
+                inputDuracion.value = duracionActual + valor;
+            }
+        }
+
+        function validarPrecio(input) {
+            if (!/^\d+(\.\d{1,2})?$/.test(input.value)) {
+                input.setCustomValidity("Por favor, ingresa un valor numérico válido.");
+            } else {
+                input.setCustomValidity('');
+            }
+        }
+    </script>
+
+    
+
+    <!-- Footer -->
+    <footer class="text-white mt-5 p-4 text-center" style="background: linear-gradient(135deg, #3e0048 0%, #07a3ca 100%);">
+        &copy; 2024 TuFactura Medellín. Todos los derechos reservados.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</body>
+</html>
